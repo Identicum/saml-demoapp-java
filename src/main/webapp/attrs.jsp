@@ -25,7 +25,7 @@
 	<%
 	    Boolean found = false;
 		@SuppressWarnings("unchecked")
-		Enumeration<String> elems = (Enumeration<String>) session.getAttributeNames();	
+		Enumeration<String> elems = (Enumeration<String>) session.getAttributeNames();
 		Map<String, List<String>> attributes;
 		while (elems.hasMoreElements() && !found) {
 			String value = (String) elems.nextElement();
@@ -46,18 +46,18 @@
 			</div>
 		</div>
 	</div>
-	<div class="container">
+	<div class="container" style="margin-top:100px"> 
 	<%
 		if(found)
-		{	
+		{
 			attributes = (Map<String, List<String>>) session.getAttribute("attributes");
-			if (attributes.isEmpty()) 
+			if (attributes.isEmpty())
 			{
 	%>
 				<div class="alert alert-danger" role="alert">You don't have any attributes</div>
 	<%
 			}
-			else 
+			else
 			{
     %>
         		<table class="table">
@@ -68,7 +68,7 @@
         				</tr>
       				</thead>
       				<tbody>
-    <%				
+    <%
 				Collection<String> keys = attributes.keySet();
 				for(String name :keys)
 				{
@@ -77,7 +77,7 @@
 					for(String value :values) {
 						out.println("<li>" + value + "</li>");
 					}
-					
+
 					out.println("</td></tr>");
 				}
 	%>
@@ -85,12 +85,12 @@
 				</table>
 	<%
 			}
-		} 
-		else 
+		}
+		else
 		{
 			out.println("<div class=\"alert alert-danger\" role=\"alert\">Not authenticated</div>");
 		}
-		
+
 	%>
 	</div>
 </body>
