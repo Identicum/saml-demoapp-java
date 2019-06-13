@@ -1,4 +1,4 @@
-FROM identicum/tomcat:latest AS build-env
+FROM identicum/centos-tomcat:latest AS build-env
 
 RUN yum -y install git
 ENV JAVA_HOME /etc/alternatives/java_sdk
@@ -15,7 +15,7 @@ RUN /usr/bin/mvn package
 
 # ############################################################################
 # Build runtime image
-FROM identicum/tomcat:latest
+FROM identicum/centos-tomcat:latest
 MAINTAINER Gustavo J Gallardo <ggallard@identicum.com>
 
 RUN yum -y install unzip
