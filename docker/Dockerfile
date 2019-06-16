@@ -1,16 +1,6 @@
-FROM identicum/centos-tomcat:latest AS build-env
+FROM identicum/centos-java-maven:latest AS build-env
 
-RUN yum -y install git
-ENV JAVA_HOME /etc/alternatives/java_sdk
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz -O /tmp/maven.tgz && \
-    tar -xvzf /tmp/maven.tgz --directory /usr/share/ && \
-    rm -f /tmp/maven.tgz && \
-    mv /usr/share/apache-maven-* /usr/share/apache-maven && \
-    ln -s /usr/share/apache-maven/bin/mvn /usr/bin/mvn
-ENV MAVEN_HOME /usr/share/apache-maven
-
-RUN git clone https://github.com/Identicum/saml-demoapp-java.git /source
-WORKDIR /source
+RUN git clone https://github.com/Identicum/saml-demoapp-java.git .
 RUN /usr/bin/mvn package
 
 # ############################################################################
