@@ -28,4 +28,7 @@ Or build `identicum/saml-demoapp-java` from source:
 #### Run the container
 Run the image, binding associated ports, and mounting your custom onelogin.saml.properties:
 
-    docker run -p 8080:8080 -v $(pwd)/onelogin.saml.properties:/usr/local/tomcat/webapps/saml-demoapp-java/WEB-INF/classes/onelogin.saml.properties identicum/saml-demoapp-java
+    docker run -d \
+      -p 8080:8080 \
+      -v $(pwd)/onelogin.saml.properties:/usr/local/tomcat/webapps/saml-demoapp-java/WEB-INF/classes/onelogin.saml.properties \
+      identicum/saml-demoapp-java
