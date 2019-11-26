@@ -29,8 +29,9 @@
     	Auth auth = (Auth)session.getAttribute("auth");
 		if(auth != null) {	
 			xmlResponse = auth.getLastResponseXML();
-			int beginIndex = xmlResponse.indexOf("<saml:Assertion");
-			int endIndex = xmlResponse.indexOf("</saml:Assertion>") + "</saml:Assertion>".length();
+			String samlTag = (StringUtils.containsIgnoreCase(xmlResponse, "<saml:Assertion")) ? "saml" : "saml2";
+			int beginIndex = xmlResponse.indexOf("<" + samlTag + ":Assertion");
+			int endIndex = xmlResponse.indexOf("</" + samlTag + ":Assertion>") + ("</" + samlTag + ":Assertion>").length();
 			xmlAssertion = xmlResponse.substring(beginIndex, endIndex);
 		}
 
