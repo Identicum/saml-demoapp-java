@@ -26,6 +26,19 @@ Or build `identicum/saml-demoapp-java` from source:
 * Customize to your environment
 
 #### Run the container
+
+#### Run the container with your custom variables as JAVA_OPTS environment variables
+
+Run the image, binding associated ports, and defining your custom variables as environment variables:
+
+    docker run -d \
+	    -p 8080:8080 \
+	    -e "JAVA_OPTS=-Donelogin.saml2.sp.entityid=sp-entityid -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp/saml-demoapp-java/acs.jsp -Donelogin.saml2.idp.entityid=idp-entityid -Donelogin.saml2.idp.x509cert=idp-x509cert -Donelogin.saml2.idp.single_sign_on_service.url=idp-sso-url" \
+        identicum/saml-demoapp-java
+
+
+#### Or Run the container mounting your custom onelogin.saml.properties
+
 Run the image, binding associated ports, and mounting your custom onelogin.saml.properties:
 
     docker run -d \
