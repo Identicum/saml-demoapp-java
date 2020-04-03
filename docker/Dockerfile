@@ -6,7 +6,7 @@ RUN /usr/bin/mvn package
 # ############################################################################
 # Build runtime image
 FROM identicum/centos-tomcat:latest
-MAINTAINER Gustavo J Gallardo <ggallard@identicum.com>
+LABEL maintainer="Gustavo J Gallardo <ggallard@identicum.com>"
 
 RUN yum -y install unzip
 COPY --from=build-env /source/target/saml-demoapp-java.war /tmp/
