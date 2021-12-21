@@ -10,7 +10,7 @@ env:
   CONTAINER_IMAGE: identicum/${{github.event.repository.name}}:latest
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze code
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -32,6 +32,8 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
   build-push:
+    name: Build docker image and push to DockerHub registry
+    needs: analyze
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
