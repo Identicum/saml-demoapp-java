@@ -8,8 +8,7 @@ if (errors.isEmpty()) {
 	out.println(metadata);
 } else {
 	response.setContentType("text/html; charset=UTF-8");
-
 	for (String error : errors) {
-	    out.println("<p>"+error+"</p>");
+		out.println("<p>"+error+"</p>");
 	}
 }%>

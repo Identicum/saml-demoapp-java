@@ -30,7 +30,7 @@
 		inputStream.close();
 		
 		Auth auth = new Auth(request, response);
-	    auth.login(request.getContextPath() + "/attrs.jsp");
+		auth.login(request.getContextPath() + "/attrs.jsp");
 	%>
 </body>
 </html>
