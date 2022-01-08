@@ -5,10 +5,11 @@
 	"adminUrl": "http://saml:8081/saml-demoapp-java/metadata.jsp",
     "protocol": "saml",
 	"attributes": {
-		"saml.client.signature": "false"
+		"saml.client.signature": "false",
+        "saml_single_logout_service_url_post": "http://saml:8081/saml-demoapp-java/sls.jsp"
 	},
 	"redirectUris": [
-		"http://saml:8081/*"
+		"http://saml:8081/saml-demoapp-java/acs.jsp"
 	],
 	"defaultClientScopes": [ ],
 	"optionalClientScopes": [ ],
