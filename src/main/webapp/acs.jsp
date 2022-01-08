@@ -1,16 +1,12 @@
 <%@page import="com.onelogin.saml2.Auth,
 				com.onelogin.saml2.servlet.ServletUtils,
-				com.onelogin.saml2.settings.SettingsBuilder,
-				com.onelogin.saml2.settings.Saml2Settings,
 				java.util.List,
 				java.util.Map,
 				org.apache.commons.lang3.StringUtils"
 		language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file = "samlsettings.jsp" %>
 <%
-	Saml2Settings settings = new SettingsBuilder().fromProperties(getSamlSettings()).build();
-
-	Auth auth = new Auth(settings, request, response);
+	Auth auth = new Auth(request, response);
 	auth.processResponse();
 	if (!auth.isAuthenticated()) {
 		out.println("<div class=\"alert alert-danger\" role=\"alert\">Not authenticated</div>");

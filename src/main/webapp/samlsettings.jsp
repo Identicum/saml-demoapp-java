@@ -21,15 +21,15 @@ public Properties getSamlSettings() throws Exception {
         }
     });
 
-    properties.store(outputStream, null);
-    outputStream.close();
-    inputStream.close();
-
     String idpEntityDescriptor = properties.getProperty("idp.entity.descriptor");
     if(StringUtils.isNotBlank(idpEntityDescriptor)){
         URL url = new URL(properties.getProperty("idp.entity.descriptor"));
         properties.putAll(IdPMetadataParser.parseRemoteXML(url));
     }
+
+    properties.store(outputStream, null);
+    outputStream.close();
+    inputStream.close();
 
     return properties;
 }

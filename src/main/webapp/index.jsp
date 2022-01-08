@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file = "samlsettings.jsp" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -12,6 +13,7 @@
 		<link rel="stylesheet" href="./css/common.css" >
 		<link rel="stylesheet" href="./css/bootstrap.min.css" >
 		<link rel="stylesheet" href="./css/all.css">
+		<% getSamlSettings(); %>
 	</head>
 	<body>
 		<div class="navbar fixed-top">
