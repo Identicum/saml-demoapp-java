@@ -17,7 +17,8 @@ services:
   saml:
     image: identicum/saml-demoapp-java
     restart: always
-    #environment:
-    #  JAVA_OPTS: -Donelogin.saml2.sp.entityid=sp-entityid -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp/saml-demoapp-java/acs.jsp -Donelogin.saml2.idp.entityid=idp-entityid -Donelogin.saml2.idp.x509cert=idp-x509cert -Donelogin.saml2.idp.single_sign_on_service.url=idp-sso-url
+    environment:
+      JAVA_OPTS: -Donelogin.saml2.sp.entityid=http://saml:8081/saml-demoapp-java/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://saml:8081/saml-demoapp-java/acs.jsp 
+      #-Donelogin.saml2.idp.entityid=idp-entityid -Donelogin.saml2.idp.x509cert=idp-x509cert -Donelogin.saml2.idp.single_sign_on_service.url=idp-sso-url
     ports:
       - 8081:8080
