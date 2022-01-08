@@ -1,7 +1,6 @@
 <%@page import="com.onelogin.saml2.Auth,
 				java.util.List"
 		language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@include file = "samlsettings.jsp" %>
 <!DOCTYPE html>
 <html>
 	<meta charset="utf-8">
