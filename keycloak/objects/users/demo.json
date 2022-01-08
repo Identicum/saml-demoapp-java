@@ -1,0 +1,6 @@
+{
+    "email": "demo@identicum.com",
+    "enabled": "true",
+    "username": "demo",
+    "credentials": [ {"type": "password", "value": "demo"} ]
+}

@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  idp:
+    image: jboss/keycloak:15.0.2
+    restart: always
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    volumes:
+      - ./keycloak/startup-scripts/:/opt/jboss/startup-scripts/
+      - ./keycloak/custom-scripts/:/opt/jboss/custom-scripts/
+      - ./keycloak/objects/:/opt/jboss/keycloak/objects/
+    ports:
+      - 8080:8080
+
+  saml:
+    image: identicum/saml-demoapp-java
+    restart: always
+    #environment:
+    #  JAVA_OPTS: -Donelogin.saml2.sp.entityid=http://saml:8080/saml-demoapp-java/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://saml:8080/saml-demoapp-java/acs.jsp -Donelogin.saml2.idp.entityid=http://idp:8081/auth/realms/demorealm -Donelogin.saml2.idp.x509cert=MIICoTCCAYkCBgF+NS/1BDANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDDAlkZW1vcmVhbG0wHhcNMjIwMTA3MTUzNTQyWhcNMzIwMTA3MTUzNzIyWjAUMRIwEAYDVQQDDAlkZW1vcmVhbG0wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCXgyaJUYysYKs0Zf9rpYhynWC6XahCjgQziRdLjTdUokV1BN29j/cAGkRDjdDu82smPEmBRbYh87Q7yUf1R8N4bLl/sUvTlQFcjP1uOiiTA/9hL6b/YJ1RrAMbgv0AIXZ3u0OXuc+TGSKKnsTFT149+X6SrPXdrGCt00qhHF9x2NLqKz/azj/nzWHaVEuhaFKUJc1XjjPJggDCzCKg0i0hC9reOCJ5p3QkFNgyHywzp7CN/G4s3rhdDXDwIi0og2+SlMCzgG97cbR5BOPuaF0qNf1GRUBcHA2YFV7xkKHxSPYcTI2xGElUIVXURC+s32RBmRnjrJwpNWX5oXj53mGVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBACHu4BSf3wo06XLexEC0uf5xMRXK248uSfuaXH8ZgMhh9CMq+vPkirKr8vAtIiGfio9T8WzECqgjAEN4OKBY0N6KPkV3sz+Gv7Na+jyuqkCOUq+ia+GofWaY+Z5hU1bPN8dprk9sXRDGfFYC1du0DmTsvQGPi6YMlpl0SsGRoVA7IQe8/5EG45liDG27G07ZQEjW7HylbNu8QEbKDS4YKl6g6w7YdIgcLXaZerOPvvHZQMYN6+ilvLPHekrO7X+BlA2m+InImTiqv/rRlXzsQs3e7/2XoxJMmQ2qHZ3c0d+w8mUNc+/a4ed3C/PO89lkxtJE3gHoCyKHQuqXSJZ523E= -Donelogin.saml2.idp.single_sign_on_service.url=http://idp:8081/auth/realms/demorealm/protocol/saml
+    ports:
+      - 8081:8080

@@ -1,13 +1,12 @@
-<%@page import="java.util.Base64"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="com.onelogin.saml2.Auth"%>
-<%@page import="java.util.Collection"%>
-<%@page import="java.util.Enumeration"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.Map"%>
-<%@page import="org.apache.commons.lang3.StringUtils" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Base64,
+				org.apache.commons.lang.StringEscapeUtils,
+				com.onelogin.saml2.Auth,
+				java.util.Collection,
+				java.util.Enumeration,
+				java.util.List,
+				java.util.Map,
+				org.apache.commons.lang3.StringUtils"
+		language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html> 
 <html>
 	<head>
