@@ -3,7 +3,8 @@
 				java.io.File,
 				java.io.FileInputStream,
 				java.io.FileOutputStream,
-				java.net.URL"%>
+				java.net.URL,
+				org.apache.commons.lang3.StringUtils" %>
 <%!
 public Properties getSamlSettings() throws Exception {
     Properties properties = new Properties();
@@ -24,8 +25,11 @@ public Properties getSamlSettings() throws Exception {
     outputStream.close();
     inputStream.close();
 
-    URL url = new URL(properties.getProperty("idp.entity.descriptor"));
-    properties.putAll(IdPMetadataParser.parseRemoteXML(url));
+    String idpEntityDescriptor = properties.getProperty("idp.entity.descriptor");
+    if(StringUtils.isNotBlank(idpEntityDescriptor)){
+        URL url = new URL(properties.getProperty("idp.entity.descriptor"));
+        properties.putAll(IdPMetadataParser.parseRemoteXML(url));
+    }
 
     return properties;
 }
