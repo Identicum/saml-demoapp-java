@@ -8,10 +8,6 @@ for i in {1..10}; do
     if [ -z "$custom_realm" ]; then
         echo "Importing custom realm."
         kcadm.sh create realms -f /opt/jboss/keycloak/objects/realm.json
-        echo "Importing client scopes."
-        for f in /opt/jboss/keycloak/objects/clientScopes/*.json; do
-            kcadm.sh create client-scopes -r demorealm -f $f
-        done
         echo "Importing clients."
         for f in /opt/jboss/keycloak/objects/clients/*.json; do
             kcadm.sh create clients -r demorealm -f $f
