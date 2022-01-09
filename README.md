@@ -22,6 +22,6 @@ Run the image, binding associated ports, and defining your custom parameters as 
 ```sh
 docker run -d \
     -p 8080:8080 \
-    -e "JAVA_OPTS=-Donelogin.saml2.sp.entityid=sp-entityid -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp/saml-demoapp-java/acs.jsp -Donelogin.saml2.idp.entityid=idp-entityid -Donelogin.saml2.idp.x509cert=idp-x509cert -Donelogin.saml2.idp.single_sign_on_service.url=idp-sso-url" \
+    -e "JAVA_OPTS=-Donelogin.saml2.sp.entityid=http://demoapp.domain.com:8081/saml-demoapp-java/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp.domain.com:8081/saml-demoapp-java/acs.jsp -Didp.entity.descriptor=http://idp.domain.com:8080/auth/realms/demorealm/protocol/saml/descriptor" \
     identicum/saml-demoapp-java
 ```
