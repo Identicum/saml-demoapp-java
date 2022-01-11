@@ -119,17 +119,16 @@
 					}
 			
 				%>
-						</div>
 					</div>
-				</div>
-				<div class="tab-pane fade" id="response" role="tabpanel" aria-labelledby="response-tab">
-					<h2>SAML Response</h2>
-					<pre><%= StringEscapeUtils.escapeHtml(xmlResponse) %></pre>
-				</div>
-				<div class="tab-pane fade" id="assertion" role="tabpanel" aria-labelledby="assertion-tab">
-					<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
-					<h2>base64-encoded assertion</h2>
-					<pre id="base64Assertion"><%= Base64.getEncoder().encodeToString(xmlAssertion.getBytes()) %></pre>
+					<div class="tab-pane fade" id="response" role="tabpanel" aria-labelledby="response-tab">
+						<h2>SAML Response</h2>
+						<pre><%= StringEscapeUtils.escapeHtml(xmlResponse) %></pre>
+					</div>
+					<div class="tab-pane fade" id="assertion" role="tabpanel" aria-labelledby="assertion-tab">
+						<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
+						<h2>base64-encoded assertion</h2>
+						<pre id="base64Assertion"><%= Base64.getEncoder().encodeToString(xmlAssertion.getBytes()) %></pre>
+					</div>
 				</div>
 			</div>
 		</div>

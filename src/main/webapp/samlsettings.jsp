@@ -4,9 +4,14 @@
 				java.io.FileInputStream,
 				java.io.FileOutputStream,
 				java.net.URL,
+				java.util.Arrays,
+				java.util.List,
+				java.util.Map,
 				org.apache.commons.lang3.StringUtils" %>
+<%@ page import="java.util.stream.Collectors" %>
 <%!
 public Properties getSamlSettings() throws Exception {
+
     Properties properties = new Properties();
     File file = new File(this.getClass().getClassLoader().getResource("onelogin.saml.properties").getFile());
 
@@ -23,8 +28,16 @@ public Properties getSamlSettings() throws Exception {
 
     String idpEntityDescriptor = properties.getProperty("idp.entity.descriptor");
     if(StringUtils.isNotBlank(idpEntityDescriptor)){
+        List<String> idpProperties = Arrays.asList("onelogin.saml2.idp.entityid", "onelogin.saml2.idp.x509cert", "onelogin.saml2.idp.single_sign_on_service.url");
         URL url = new URL(properties.getProperty("idp.entity.descriptor"));
-        properties.putAll(IdPMetadataParser.parseRemoteXML(url));
+
+        Map<String, Object> idpMetadata = IdPMetadataParser.parseRemoteXML(url);
+        idpMetadata = idpMetadata
+                .entrySet()
+                .stream()
+                .filter(property -> idpProperties.contains(property.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        properties.putAll(idpMetadata);
     }
 
     properties.store(outputStream, null);
