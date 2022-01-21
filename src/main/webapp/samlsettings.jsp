@@ -7,10 +7,14 @@
 				java.util.Arrays,
 				java.util.List,
 				java.util.Map,
-				org.apache.commons.lang3.StringUtils" %>
+				org.apache.commons.lang3.StringUtils,
+                org.slf4j.Logger,
+	            org.slf4j.LoggerFactory" %>
 <%@ page import="java.util.stream.Collectors" %>
 <%!
 public Properties getSamlSettings() throws Exception {
+
+    Logger logger = LoggerFactory.getLogger("samlsettings.jsp");
 
     Properties properties = new Properties();
     File file = new File(this.getClass().getClassLoader().getResource("onelogin.saml.properties").getFile());
@@ -20,8 +24,10 @@ public Properties getSamlSettings() throws Exception {
     FileOutputStream outputStream = new FileOutputStream(file);
 
     properties.forEach((key,value) -> {
+        logger.debug("Property from file {} with value {}", key, value);
         String envProperty = System.getProperty(key.toString());
         if(envProperty != null){
+            logger.debug("Setting property from environment {} with value {}", key, envProperty);
             properties.setProperty(key.toString(), envProperty);
         }
     });
@@ -36,6 +42,7 @@ public Properties getSamlSettings() throws Exception {
                 .entrySet()
                 .stream()
                 .filter(property -> idpProperties.contains(property.getKey()))
+                .peek(property -> logger.debug("Setting property from IDP metadata {} with value {}", property.getKey(), property.getValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         properties.putAll(idpMetadata);
     }
