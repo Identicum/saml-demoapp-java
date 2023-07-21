@@ -4,7 +4,7 @@ COPY . .
 RUN mvn install -DskipTests
 
 # ############################################################################
-FROM identicum/centos-tomcat:latest
+FROM ghcr.io/identicum/centos-tomcat:latest
 LABEL maintainer="Gustavo J Gallardo <ggallard@identicum.com>"
 
 RUN yum -y install unzip
