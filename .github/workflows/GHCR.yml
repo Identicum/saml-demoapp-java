@@ -21,6 +21,7 @@ jobs:
       with:
         debug: true
         languages: ${{ matrix.language }}
+    - uses: github/codeql-action/autobuild@v2
     - uses: github/codeql-action/analyze@v2
   build-push:
     needs: analyze
