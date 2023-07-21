@@ -3,7 +3,7 @@ version: '3.7'
 services:
   idp:
     container_name: idp
-    image: jboss/keycloak:15.0.2
+    image: quay.io/keycloak/keycloak:19.0.3-legacy
     restart: always
     environment:
       KEYCLOAK_USER: admin
@@ -16,7 +16,7 @@ services:
       - 8080:8080
   demoapp:
     container_name: demoapp
-    image: identicum/saml-demoapp-java:latest
+    image: ghcr.io/identicum/saml-demoapp-java:latest
     restart: always
     environment:
       JAVA_OPTS: -Donelogin.saml2.sp.entityid=http://demoapp:8081/saml-demoapp-java/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp:8081/saml-demoapp-java/acs.jsp -Didp.entity.descriptor=http://idp:8080/auth/realms/demorealm/protocol/saml/descriptor
