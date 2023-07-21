@@ -4,6 +4,7 @@ on:
       - main
 env:
   CONTAINER_IMAGE: ghcr.io/identicum/${{github.event.repository.name}}:latest
+jobs:
   build-push:
     runs-on: ubuntu-latest
     steps:
