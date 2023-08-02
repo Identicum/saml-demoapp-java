@@ -8,18 +8,11 @@ services:
         environment:
             KEYCLOAK_ADMIN: admin
             KEYCLOAK_ADMIN_PASSWORD: admin
-            KC_HEALTH_ENABLED: true
         volumes:
             - ./keycloak/:/opt/keycloak/data/import/
         command: "start-dev --import-realm"
         ports:
             - 8080:8080
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
-            interval: 5s
-            timeout: 1s
-            retries: 10 
-            start_period: 10s
     demoapp:
         container_name: demoapp
         image: ghcr.io/identicum/saml-demoapp-java:latest
