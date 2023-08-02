@@ -1,24 +1,33 @@
 version: '3.7'
 
 services:
-  idp:
-    container_name: idp
-    image: quay.io/keycloak/keycloak:19.0.3-legacy
-    restart: always
-    environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-    volumes:
-      - ./keycloak/startup-scripts/:/opt/jboss/startup-scripts/
-      - ./keycloak/custom-scripts/:/opt/jboss/custom-scripts/
-      - ./keycloak/objects/:/opt/jboss/keycloak/objects/
-    ports:
-      - 8080:8080
-  demoapp:
-    container_name: demoapp
-    image: ghcr.io/identicum/saml-demoapp-java:latest
-    restart: always
-    environment:
-      JAVA_OPTS: -Donelogin.saml2.sp.entityid=http://demoapp1:8081/saml-demoapp-java/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp1:8081/saml-demoapp-java/acs.jsp -Didp.entity.descriptor=http://idp:8080/auth/realms/demorealm/protocol/saml/descriptor
-    ports:
-      - 8081:8080
+    idp:
+        container_name: idp
+        image: ghcr.io/identicum/keycloak:22.0
+        restart: always
+        environment:
+            KEYCLOAK_ADMIN: admin
+            KEYCLOAK_ADMIN_PASSWORD: admin
+            KC_HEALTH_ENABLED: true
+        volumes:
+            - ./keycloak/:/opt/keycloak/data/import/
+        command: "start-dev --import-realm"
+        ports:
+            - 8080:8080
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+            interval: 5s
+            timeout: 1s
+            retries: 10 
+            start_period: 10s
+    demoapp:
+        container_name: demoapp
+        image: ghcr.io/identicum/saml-demoapp-java:latest
+        restart: always
+        environment:
+            JAVA_OPTS: -Donelogin.saml2.sp.entityid=http://demoapp1:8081/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp1:8081/acs.jsp -Didp.entity.descriptor=http://idp:8080/realms/demorealm/protocol/saml/descriptor
+        ports:
+            - 8081:8080
+        depends_on:
+            idp:
+                condition: service_healthy

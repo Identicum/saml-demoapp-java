@@ -1,0 +1,76 @@
+{
+    "realm": "demorealm",
+    "enabled": true,
+    "registrationAllowed" : true,
+    "registrationEmailAsUsername" : false,
+    "verifyEmail" : true,
+    "loginWithEmailAllowed" : true,
+    "duplicateEmailsAllowed" : false,
+    "resetPasswordAllowed" : true,
+    "clients" : [ 
+        {
+            "clientId": "http://demoapp1:8081/",
+            "name": "saml_client",
+            "description": "saml_client",
+            "adminUrl": "http://demoapp1:8081/metadata.jsp",
+            "protocol": "saml",
+            "attributes": {
+                "saml.authnstatement": "true",
+                "saml.server.signature": "true",
+                "saml.client.signature": "false",
+                "saml_single_logout_service_url_post": "http://demoapp1:8081/sls.jsp"
+            },
+            "redirectUris": [
+                "http://demoapp1:8081/acs.jsp"
+            ],
+            "defaultClientScopes": [ ],
+            "optionalClientScopes": [ ],
+            "protocolMappers": [
+                {
+                    "name": "X500 email",
+                    "protocol": "saml",
+                    "protocolMapper": "saml-user-property-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "attribute.nameformat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+                        "user.attribute": "email",
+                        "friendly.name": "email",
+                        "attribute.name": "urn:oid:1.2.840.113549.1.9.1"
+                    }
+                },
+                {
+                    "name": "X500 surname",
+                    "protocol": "saml",
+                    "protocolMapper": "saml-user-property-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "attribute.nameformat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+                        "user.attribute": "lastName",
+                        "friendly.name": "surname",
+                        "attribute.name": "urn:oid:2.5.4.4"
+                    }
+                },
+                {
+                    "name": "X500 givenName",
+                    "protocol": "saml",
+                    "protocolMapper": "saml-user-property-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "attribute.nameformat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+                        "user.attribute": "firstName",
+                        "friendly.name": "givenName",
+                        "attribute.name": "urn:oid:2.5.4.42"
+                    }
+                }
+            ]
+        }
+    ],
+    "users" : [ {
+        "username": "demo",
+        "enabled" : true,
+        "createdTimestamp" : 1672531200000,
+        "email": "demo@identicum.com",
+        "emailVerified" : true,
+        "credentials" : [ {"type": "password", "value": "demo"} ]
+      } ]
+}
