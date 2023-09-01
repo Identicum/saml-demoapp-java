@@ -17,18 +17,20 @@ public Properties getSamlSettings() throws Exception {
     Logger logger = LoggerFactory.getLogger("samlsettings.jsp");
 
     Properties properties = new Properties();
-    File file = new File(this.getClass().getClassLoader().getResource("onelogin.saml.properties").getFile());
 
-    FileInputStream inputStream = new FileInputStream(file);
+    File templateFile = new File(this.getClass().getClassLoader().getResource("onelogin.saml.template").getFile());
+    FileInputStream inputStream = new FileInputStream(templateFile);
     properties.load(inputStream);
-    FileOutputStream outputStream = new FileOutputStream(file);
+    inputStream.close();
 
     properties.forEach((key,value) -> {
-        logger.debug("Property from file {} with value {}", key, value);
         String envProperty = System.getProperty(key.toString());
         if(envProperty != null){
-            logger.debug("Setting property from environment {} with value {}", key, envProperty);
+            logger.debug("Property {}, setting value {} from environment.", key, envProperty);
             properties.setProperty(key.toString(), envProperty);
+        }
+        else{
+            logger.debug("Property {}, keeping value {} from template.", key, value);
         }
     });
 
@@ -42,15 +44,21 @@ public Properties getSamlSettings() throws Exception {
                 .entrySet()
                 .stream()
                 .filter(property -> idpProperties.contains(property.getKey()))
-                .peek(property -> logger.debug("Setting property from IDP metadata {} with value {}", property.getKey(), property.getValue()))
+                .peek(property -> logger.debug("Property {}, setting value {} from IDP metadata.", property.getKey(), property.getValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         properties.putAll(idpMetadata);
     }
 
+    logger.trace("Create File object.");
+    File propertiesFile = new File(this.getClass().getClassLoader().getResource("onelogin.saml.properties").getFile());
+    logger.trace("Open File object.");
+    FileOutputStream outputStream = new FileOutputStream(propertiesFile);
+    logger.debug("Persisting onelogin.saml.properties file.");
     properties.store(outputStream, null);
+    logger.trace("Closing File object.");
     outputStream.close();
-    inputStream.close();
 
+    logger.trace("Returning properties.");
     return properties;
 }
 %>
