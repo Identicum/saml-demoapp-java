@@ -5,7 +5,9 @@
 				java.util.Enumeration,
 				java.util.List,
 				java.util.Map,
-				org.apache.commons.lang3.StringUtils"
+				org.apache.commons.lang3.StringUtils,
+                org.slf4j.Logger,
+	            org.slf4j.LoggerFactory" 
 		language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html> 
 <html>
@@ -23,6 +25,7 @@
 	</head>
 	<body>
 		<%
+			Logger logger = LoggerFactory.getLogger("attrs.jsp");
 			String xmlResponse = null;
 			String xmlAssertion = null;
 			Auth auth = (Auth)session.getAttribute("auth");
@@ -32,8 +35,10 @@
 				int beginIndex = xmlResponse.indexOf("<" + samlTag + ":Assertion");
 				int endIndex = xmlResponse.indexOf("</" + samlTag + ":Assertion>") + ("</" + samlTag + ":Assertion>").length();
 				xmlAssertion = xmlResponse.substring(beginIndex, endIndex);
+				logger.debug("xmlAssertion: {}", xmlAssertion);
 			}
-
+			String nameId = auth.getNameId();
+			logger.debug("NameID: {}", nameId);
 			Boolean found = false;
 			@SuppressWarnings("unchecked")
 			Enumeration<String> elems = (Enumeration<String>) session.getAttributeNames();
@@ -48,7 +53,7 @@
 		<div class="navbar fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="navbar-brand" rel="home" href="#" title="Identicum">
+					<a class="navbar-brand" rel="assertionb64" href="#" title="Identicum">
 						<img style="max-width:140px; margin-top: -7px;" src="imgs/logo.png">
 					</a>
 				</div>
@@ -61,22 +66,23 @@
 			<div>
 				<ul class="nav nav-tabs" id="myTab" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Attributes</a>
+						<a class="nav-link" id="assertionb64-tab" data-toggle="tab" href="#assertionb64" role="tab" aria-controls="assertionb64" aria-selected="true">Assertion b64</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="response-tab" data-toggle="tab" href="#response" role="tab" aria-controls="response" aria-selected="false">SAML Response</a>
+						<a class="nav-link" id="response-tab" data-toggle="tab" href="#response" role="tab" aria-controls="response" aria-selected="false">Assertion XML</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="assertion-tab" data-toggle="tab" href="#assertion" role="tab" aria-controls="assertion" aria-selected="false">Assertion B64</a>
+						<a class="nav-link active" id="attributes-tab" data-toggle="tab" href="#attributes" role="tab" aria-controls="attributes" aria-selected="false">Asertion attributes</a>
 					</li>
 				</ul>
 				<div class="tab-content" id="myTabContent">
 				<!-- Tab panes -->
 					<div class="tab-content" style="padding-top: 20px">
-						<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+						<div class="tab-pane fade show active" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
 				<%
 					if(found)
 					{
+						logger.debug("attributes: {}", session.getAttribute("attributes"));
 						attributes = (Map<String, List<String>>) session.getAttribute("attributes");
 						if (attributes.isEmpty())
 						{
@@ -96,7 +102,8 @@
 								</thead>
 								<tbody>
 				<%
-							Collection<String> keys = attributes.keySet();
+					out.println("<tr><td>NameID (" + auth.getNameIdFormat() + ")</td><td>" + nameId + "</td></tr>");
+					Collection<String> keys = attributes.keySet();
 							for(String name :keys)
 							{
 								out.println("<tr><td>" + name + "</td><td>");
@@ -104,7 +111,6 @@
 								for(String value :values) {
 									out.println("<li>" + value + "</li>");
 								}
-			
 								out.println("</td></tr>");
 							}
 				%>
@@ -117,14 +123,13 @@
 					{
 						out.println("<div class=\"alert alert-danger\" role=\"alert\">Not authenticated</div>");
 					}
-			
 				%>
 					</div>
 					<div class="tab-pane fade" id="response" role="tabpanel" aria-labelledby="response-tab">
 						<h2>SAML Response</h2>
-						<pre><%= StringEscapeUtils.escapeHtml(xmlResponse) %></pre>
+						<pre lang="xml"><%= StringEscapeUtils.escapeHtml(xmlResponse) %></pre>
 					</div>
-					<div class="tab-pane fade" id="assertion" role="tabpanel" aria-labelledby="assertion-tab">
+					<div class="tab-pane fade" id="assertionb64" role="tabpanel" aria-labelledby="assertionb64-tab">
 						<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
 						<h2>base64-encoded assertion</h2>
 						<pre id="base64Assertion"><%= Base64.getEncoder().encodeToString(xmlAssertion.getBytes()) %></pre>

@@ -8,6 +8,9 @@ onelogin.saml2.sp.entityid =
 # URL Location where the <Response> from the IdP will be returned (e.g.: http://demoapp1:8081/acs.jsp)
 onelogin.saml2.sp.assertion_consumer_service.url = 
 
+# URL for LogoutResponse
+onelogin.saml2.sp.single_logout_service.url = 
+
 onelogin.saml2.debug = true
 onelogin.saml2.strict = true
 

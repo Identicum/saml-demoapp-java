@@ -18,11 +18,12 @@
                 "saml.authnstatement": "true",
                 "saml.server.signature": "true",
                 "saml.client.signature": "false",
-                "saml_single_logout_service_url_post": "http://demoapp1:8081/sls.jsp"
+                "saml_single_logout_service_url_redirect": "http://demoapp1:8081/sls.jsp"
             },
             "redirectUris": [
                 "http://demoapp1:8081/acs.jsp"
             ],
+            "frontchannelLogout": true,
             "defaultClientScopes": [ ],
             "optionalClientScopes": [ ],
             "protocolMappers": [
@@ -71,6 +72,8 @@
         "createdTimestamp" : 1672531200000,
         "email": "demo@identicum.com",
         "emailVerified" : true,
+        "firstName": "Demo",
+        "lastName": "User",
         "credentials" : [ {"type": "password", "value": "demo"} ]
       } ]
 }
