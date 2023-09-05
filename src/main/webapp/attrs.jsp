@@ -1,13 +1,17 @@
 <%@page import="java.util.Base64,
 				org.apache.commons.lang.StringEscapeUtils,
-				com.onelogin.saml2.Auth,
 				java.util.Collection,
 				java.util.Enumeration,
 				java.util.List,
 				java.util.Map,
 				org.apache.commons.lang3.StringUtils,
                 org.slf4j.Logger,
-	            org.slf4j.LoggerFactory" 
+	            org.slf4j.LoggerFactory,
+				javax.xml.parsers.DocumentBuilder,
+                javax.xml.parsers.DocumentBuilderFactory,
+                org.w3c.dom.*,
+                org.xml.sax.InputSource,
+				java.io.StringReader"
 		language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html> 
 <html>
@@ -26,28 +30,33 @@
 	<body>
 		<%
 			Logger logger = LoggerFactory.getLogger("attrs.jsp");
-			String xmlResponse = null;
-			String xmlAssertion = null;
-			Auth auth = (Auth)session.getAttribute("auth");
-			if(auth != null) {	
-				xmlResponse = auth.getLastResponseXML();
-				String samlTag = (StringUtils.containsIgnoreCase(xmlResponse, "<saml:Assertion")) ? "saml" : "saml2";
-				int beginIndex = xmlResponse.indexOf("<" + samlTag + ":Assertion");
-				int endIndex = xmlResponse.indexOf("</" + samlTag + ":Assertion>") + ("</" + samlTag + ":Assertion>").length();
-				xmlAssertion = xmlResponse.substring(beginIndex, endIndex);
-				logger.debug("xmlAssertion: {}", xmlAssertion);
-			}
-			String nameId = auth.getNameId();
-			logger.debug("NameID: {}", nameId);
-			Boolean found = false;
-			@SuppressWarnings("unchecked")
-			Enumeration<String> elems = (Enumeration<String>) session.getAttributeNames();
-			Map<String, List<String>> attributes;
-			while (elems.hasMoreElements() && !found) {
-				String value = (String) elems.nextElement();
-				if (value.equals("attributes") || value.equals("nameId")) {
-					found = true;
+
+			String assertionB64 = (String)session.getAttribute("assertionB64");
+			logger.debug("AssertionB64: {}", assertionB64);
+
+			String assertionXML = (String)session.getAttribute("assertionXML");
+			logger.debug("AssertionXML: {}", assertionXML);
+
+			String nameId = session.getAttribute("nameId").toString();
+			String nameIdFormat = session.getAttribute("nameIdFormat").toString();
+			logger.debug("NameID: {} with format {}", nameId, nameIdFormat);
+
+			String attributesXML = (String)session.getAttribute("attributesXML");
+			logger.debug("attributesXML: {}", attributesXML);
+
+			NodeList attributesList = null;
+			DocumentBuilder builder = null;
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			try{
+				builder = factory.newDocumentBuilder();
+				if(attributesXML != null && !attributesXML.isEmpty()){
+					Document attributesDOM = builder.parse(new InputSource(new StringReader(attributesXML)));
+					Node rootNode = attributesDOM.getDocumentElement();
+					logger.debug("Root Node: {}", rootNode);
+					attributesList = rootNode.getChildNodes();	
 				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		%>
 		<div class="navbar fixed-top">
@@ -66,25 +75,33 @@
 			<div>
 				<ul class="nav nav-tabs" id="myTab" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link" id="assertionb64-tab" data-toggle="tab" href="#assertionb64" role="tab" aria-controls="assertionb64" aria-selected="true">Assertion b64</a>
+						<a class="nav-link active" id="assertionb64-tab" data-toggle="tab" href="#assertionb64" role="tab" aria-controls="assertionb64" aria-selected="true">Assertion b64</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="response-tab" data-toggle="tab" href="#response" role="tab" aria-controls="response" aria-selected="false">Assertion XML</a>
+						<a class="nav-link" id="assertionxml-tab" data-toggle="tab" href="#assertionxml" role="tab" aria-controls="assertionxml" aria-selected="false">Assertion XML</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" id="attributes-tab" data-toggle="tab" href="#attributes" role="tab" aria-controls="attributes" aria-selected="false">Asertion attributes</a>
+						<a class="nav-link" id="attributes-tab" data-toggle="tab" href="#attributes" role="tab" aria-controls="attributes" aria-selected="false">Assertion attributes</a>
 					</li>
 				</ul>
 				<div class="tab-content" id="myTabContent">
 				<!-- Tab panes -->
 					<div class="tab-content" style="padding-top: 20px">
-						<div class="tab-pane fade show active" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
+						<div class="tab-pane fade show active" id="assertionb64" role="tabpanel" aria-labelledby="assertionb64-tab">
+							<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
+							<h2>base64-encoded assertion</h2>
+							<pre id="base64Assertion"><%= assertionB64 %></pre>
+						</div>
+						<div class="tab-pane fade" id="assertionxml" role="tabpanel" aria-labelledby="assertionxml-tab">
+							<h2>SAML Response</h2>
+							<pre lang="xml"><%= StringEscapeUtils.escapeHtml(assertionXML) %></pre>
+						</div>
+						<div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
 				<%
-					if(found)
+					if(nameId != null)
 					{
-						logger.debug("attributes: {}", session.getAttribute("attributes"));
-						attributes = (Map<String, List<String>>) session.getAttribute("attributes");
-						if (attributes.isEmpty())
+						out.println("<tr><td>NameID (" + nameIdFormat + ")</td><td></td><td>" + nameId + "</td></tr>");
+						if (attributesList == null)
 						{
 				%>
 							<div class="alert alert-danger" role="alert">You don't have any attributes</div>
@@ -97,21 +114,16 @@
 								<thead>
 									<tr>
 										<th>Name</th>
+										<th>Friendly Name</th>
 										<th>Values</th>
 									</tr>
 								</thead>
 								<tbody>
 				<%
-					out.println("<tr><td>NameID (" + auth.getNameIdFormat() + ")</td><td>" + nameId + "</td></tr>");
-					Collection<String> keys = attributes.keySet();
-							for(String name :keys)
-							{
-								out.println("<tr><td>" + name + "</td><td>");
-								List<String> values = attributes.get(name);
-								for(String value :values) {
-									out.println("<li>" + value + "</li>");
-								}
-								out.println("</td></tr>");
+							for(int i = 0; i < attributesList.getLength(); i++){
+								Node attribute = attributesList.item(i);
+								NamedNodeMap elementAttributes = attribute.getAttributes();
+								out.println("<tr><td>" + elementAttributes.getNamedItem("Name").getTextContent() + "</td><td>" + elementAttributes.getNamedItem("FriendlyName").getTextContent() + "</td><td>" + attribute.getTextContent() + "</td></tr>");
 							}
 				%>
 								</tbody>
@@ -124,15 +136,6 @@
 						out.println("<div class=\"alert alert-danger\" role=\"alert\">Not authenticated</div>");
 					}
 				%>
-					</div>
-					<div class="tab-pane fade" id="response" role="tabpanel" aria-labelledby="response-tab">
-						<h2>SAML Response</h2>
-						<pre lang="xml"><%= StringEscapeUtils.escapeHtml(xmlResponse) %></pre>
-					</div>
-					<div class="tab-pane fade" id="assertionb64" role="tabpanel" aria-labelledby="assertionb64-tab">
-						<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
-						<h2>base64-encoded assertion</h2>
-						<pre id="base64Assertion"><%= Base64.getEncoder().encodeToString(xmlAssertion.getBytes()) %></pre>
 					</div>
 				</div>
 			</div>

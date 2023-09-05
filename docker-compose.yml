@@ -16,6 +16,7 @@ services:
     demoapp:
         container_name: demoapp
         image: ghcr.io/identicum/saml-demoapp-java:latest
+        pull_policy: always
         restart: always
         ports:
             - 8081:8080
