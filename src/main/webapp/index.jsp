@@ -24,7 +24,7 @@
 					</a>
 				</div>
 				<div class="navbar-nav">
-					<a class="nav-item" href="dologin.jsp" style="color:#ffffff">Login</a>
+					<a id="login-button" class="nav-item" href="dologin.jsp" style="color:#ffffff">Login</a>
 				</div>
 			</div>
 		</div>
