@@ -88,7 +88,6 @@
 				<!-- Tab panes -->
 					<div class="tab-content" style="padding-top: 20px">
 						<div class="tab-pane fade show active" id="assertionb64" role="tabpanel" aria-labelledby="assertionb64-tab">
-							<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
 							<h2>base64-encoded assertion</h2>
 							<pre id="base64Assertion"><%= assertionB64 %></pre>
 						</div>
