@@ -94,13 +94,13 @@
 						</div>
 						<div class="tab-pane fade" id="assertionxml" role="tabpanel" aria-labelledby="assertionxml-tab">
 							<h2>SAML Response</h2>
-							<pre lang="xml"><%= StringEscapeUtils.escapeHtml(assertionXML) %></pre>
+							<pre lang="xml" id="assertion"><%= StringEscapeUtils.escapeHtml(assertionXML) %></pre>
 						</div>
 						<div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
 				<%
 					if(nameId != null)
 					{
-						out.println("<tr><td>NameID (" + nameIdFormat + ")</td><td></td><td>" + nameId + "</td></tr>");
+						out.println("<p><b>NameID</b> (" + nameIdFormat + ") = <b>" + nameId + "</b></p>");
 						if (attributesList == null)
 						{
 				%>
@@ -150,6 +150,35 @@
 			}
 		</style>
 		<script>
+			function formatXML(xmlString) {
+				let formattedXML = '';
+				let reg = /(>)(<)(\/*)/g;
+				xmlString = xmlString.replace(reg, '$1\r\n$2$3');
+
+				let pad = 0;
+				let arr = xmlString.split('\r\n');
+
+				for (let i = 0; i < arr.length; i++) {
+					let node = arr[i];
+
+					if (node.match(/<\/\w/)) {
+					pad--;
+					}
+
+					formattedXML += '  '.repeat(pad) + node + '\r\n';
+
+					if (node.match(/<\w[^>]*[^\/]>.*$/)) {
+					pad++;
+					}
+				}
+
+				return formattedXML;
+			}
+
+			let unformattedXML = document.getElementById("assertion").textContent;
+			let formattedXML = formatXML(unformattedXML);			console.log(formattedXML);
+			document.getElementById("assertion").textContent = formattedXML.toString();
+
 			$("#copy").click(function(event){
 				event.preventDefault();
 				// Select the email link anchor text  
