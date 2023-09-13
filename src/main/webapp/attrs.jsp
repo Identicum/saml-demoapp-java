@@ -150,33 +150,54 @@
 			}
 		</style>
 		<script>
-			function formatXML(xmlString) {
-				let formattedXML = '';
-				let reg = /(>)(<)(\/*)/g;
-				xmlString = xmlString.replace(reg, '$1\r\n$2$3');
+			function formatXML(input, indent){
+				indent = indent || '\t';
 
-				let pad = 0;
-				let arr = xmlString.split('\r\n');
+				xmlString = input.replace(/^\s+|\s+$/g, '');
 
-				for (let i = 0; i < arr.length; i++) {
-					let node = arr[i];
+				xmlString = input
+								.replace( /(<([a-zA-Z]+\b)[^>]*>)(?!<\/\2>|[\w\s])/g, "$1\n" )
+								.replace( /(<\/[a-zA-Z]+[^>]*>)/g, "$1\n")
+								.replace( />\s+(.+?)\s+<(?!\/)/g, ">\n$1\n<")
+								.replace( />(.+?)<([a-zA-Z])/g, ">\n$1\n<$2")
+								.replace(/\?></, "?>\n<")
 
-					if (node.match(/<\/\w/)) {
-					pad--;
+				xmlArr = xmlString.split('\n');
+
+				var tabs = '';
+				var start = 0;
+
+				if (/^<[?]xml/.test(xmlArr[0]))  start++;
+
+				for (var i = start; i < xmlArr.length; i++)
+				{  
+					var line = xmlArr[i].replace(/^\s+|\s+$/g, '');
+
+					if (/^<[/]/.test(line))
+					{
+					tabs = tabs.replace(indent, ' ');
+					xmlArr[i] = tabs + line;
 					}
-
-					formattedXML += '  '.repeat(pad) + node + '\r\n';
-
-					if (node.match(/<\w[^>]*[^\/]>.*$/)) {
-					pad++;
+					else if (/<.*>.*<\/.*>|<.*[^>]\/>/.test(line))
+					{
+						xmlArr[i] = tabs + line;
+					}
+					else if (/<.*>/.test(line))
+					{
+					xmlArr[i] = tabs + line;
+					tabs += indent;
+					}
+					else
+					{
+					xmlArr[i] = tabs + line;
 					}
 				}
 
-				return formattedXML;
+				return  xmlArr.join('\n');
 			}
 
 			let unformattedXML = document.getElementById("assertion").textContent;
-			let formattedXML = formatXML(unformattedXML);			console.log(formattedXML);
+			let formattedXML = formatXML(unformattedXML, " ");
 			document.getElementById("assertion").textContent = formattedXML.toString();
 
 			$("#copy").click(function(event){
