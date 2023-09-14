@@ -9,9 +9,14 @@
 	            org.slf4j.LoggerFactory,
 				javax.xml.parsers.DocumentBuilder,
                 javax.xml.parsers.DocumentBuilderFactory,
-                org.w3c.dom.*,
+				org.w3c.dom.*,
                 org.xml.sax.InputSource,
-				java.io.StringReader"
+				java.io.StringReader,
+				java.io.StringWriter,
+				org.dom4j.Document,
+				org.dom4j.DocumentHelper,
+				org.dom4j.io.OutputFormat,
+				org.dom4j.io.XMLWriter"
 		language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html> 
 <html>
@@ -23,9 +28,13 @@
 		<script src="./js/jquery-3.3.1.slim.min.js" ></script>
 		<script src="./js/popper.min.js"></script>
 		<script src="./js/bootstrap.min.js"></script>
+		<link rel="shortcut icon" href="/imgs/favicon.ico" type="image/x-icon">
 		<link rel="stylesheet" href="./css/common.css" >
 		<link rel="stylesheet" href="./css/bootstrap.min.css" >
 		<link rel="stylesheet" href="./css/all.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
 	</head>
 	<body>
 		<%
@@ -50,8 +59,8 @@
 			try{
 				builder = factory.newDocumentBuilder();
 				if(attributesXML != null && !attributesXML.isEmpty()){
-					Document attributesDOM = builder.parse(new InputSource(new StringReader(attributesXML)));
-					Node rootNode = attributesDOM.getDocumentElement();
+					org.w3c.dom.Document attributesDOM = builder.parse(new InputSource(new StringReader(attributesXML)));
+					org.w3c.dom.Node rootNode = attributesDOM.getDocumentElement();
 					logger.debug("Root Node: {}", rootNode);
 					attributesList = rootNode.getChildNodes();	
 				}
@@ -94,7 +103,26 @@
 						</div>
 						<div class="tab-pane fade" id="assertionxml" role="tabpanel" aria-labelledby="assertionxml-tab">
 							<h2>SAML Response</h2>
-							<pre lang="xml" id="assertion"><%= StringEscapeUtils.escapeHtml(assertionXML) %></pre>
+							<script>
+								hljs.highlightAll();
+							</script>
+							<pre>
+								<code class="language-xml hljs" style="white-space: pre;">
+									<%
+										StringEscapeUtils.escapeHtml(assertionXML);
+										OutputFormat format = OutputFormat.createPrettyPrint();
+										format.setIndentSize(3);
+										format.setSuppressDeclaration(false);
+										format.setEncoding("UTF-8");
+										
+										org.dom4j.Document document = DocumentHelper.parseText(assertionXML);
+										StringWriter sw = new StringWriter();
+										XMLWriter writer = new XMLWriter(sw, format);
+										writer.write(document);
+										out.println(StringEscapeUtils.escapeHtml(sw.toString()));
+									%>
+								</code>
+						</pre>
 						</div>
 						<div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
 				<%
@@ -150,56 +178,6 @@
 			}
 		</style>
 		<script>
-			function formatXML(input, indent){
-				indent = indent || '\t';
-
-				xmlString = input.replace(/^\s+|\s+$/g, '');
-
-				xmlString = input
-								.replace( /(<([a-zA-Z]+\b)[^>]*>)(?!<\/\2>|[\w\s])/g, "$1\n" )
-								.replace( /(<\/[a-zA-Z]+[^>]*>)/g, "$1\n")
-								.replace( />\s+(.+?)\s+<(?!\/)/g, ">\n$1\n<")
-								.replace( />(.+?)<([a-zA-Z])/g, ">\n$1\n<$2")
-								.replace(/\?></, "?>\n<")
-
-				xmlArr = xmlString.split('\n');
-
-				var tabs = '';
-				var start = 0;
-
-				if (/^<[?]xml/.test(xmlArr[0]))  start++;
-
-				for (var i = start; i < xmlArr.length; i++)
-				{  
-					var line = xmlArr[i].replace(/^\s+|\s+$/g, '');
-
-					if (/^<[/]/.test(line))
-					{
-					tabs = tabs.replace(indent, ' ');
-					xmlArr[i] = tabs + line;
-					}
-					else if (/<.*>.*<\/.*>|<.*[^>]\/>/.test(line))
-					{
-						xmlArr[i] = tabs + line;
-					}
-					else if (/<.*>/.test(line))
-					{
-					xmlArr[i] = tabs + line;
-					tabs += indent;
-					}
-					else
-					{
-					xmlArr[i] = tabs + line;
-					}
-				}
-
-				return  xmlArr.join('\n');
-			}
-
-			let unformattedXML = document.getElementById("assertion").textContent;
-			let formattedXML = formatXML(unformattedXML, " ");
-			document.getElementById("assertion").textContent = formattedXML.toString();
-
 			$("#copy").click(function(event){
 				event.preventDefault();
 				// Select the email link anchor text  
