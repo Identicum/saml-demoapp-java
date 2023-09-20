@@ -50,23 +50,8 @@
 			String nameIdFormat = session.getAttribute("nameIdFormat").toString();
 			logger.debug("NameID: {} with format {}", nameId, nameIdFormat);
 
-			String attributesXML = (String)session.getAttribute("attributesXML");
-			logger.debug("attributesXML: {}", attributesXML);
-
-			NodeList attributesList = null;
-			DocumentBuilder builder = null;
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			try{
-				builder = factory.newDocumentBuilder();
-				if(attributesXML != null && !attributesXML.isEmpty()){
-					org.w3c.dom.Document attributesDOM = builder.parse(new InputSource(new StringReader(attributesXML)));
-					org.w3c.dom.Node rootNode = attributesDOM.getDocumentElement();
-					logger.debug("Root Node: {}", rootNode);
-					attributesList = rootNode.getChildNodes();	
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			NodeList attributesList = (NodeList)session.getAttribute("attributesList");
+			logger.debug("Attributes: {}", attributesList);
 		%>
 		<div class="navbar fixed-top">
 			<div class="container">
