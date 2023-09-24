@@ -4,7 +4,7 @@ COPY . .
 RUN mvn install -DskipTests
 
 # ############################################################################
-FROM ghcr.io/identicum/alpine-jre17-tomcat:latest
+FROM ghcr.io/identicum/alpine-jre17-tomcat9:latest
 
 COPY --from=builder /app/target/saml-demoapp-java.war /tmp/
 RUN rm -rf /usr/local/tomcat/webapps/ROOT/* && \
