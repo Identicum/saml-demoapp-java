@@ -7,15 +7,23 @@ services:
         environment:
             KEYCLOAK_ADMIN: admin
             KEYCLOAK_ADMIN_PASSWORD: admin
-        volumes:
-            - ./keycloak/:/opt/keycloak/data/import/
-        command: "start-dev --import-realm"
         ports:
             - 8080:8080
+    
+    idp_setup:
+        container_name: idp_setup
+        image: ghcr.io/identicum/sherpa-deploy:latest
+        pull_policy: always
+        volumes:
+            - ./keycloak/terraform-objects/:/usr/home/
+        command: "./apply.sh"
+        depends_on:
+            idp:
+                condition: service_healthy
+    
     demoapp:
         container_name: demoapp
-        # image: ghcr.io/identicum/saml-demoapp-java:latest
-        build: .
+        image: ghcr.io/identicum/saml-demoapp-java:latest
         restart: always
         ports:
             - 8081:8080
@@ -24,6 +32,15 @@ services:
             - ONELOGIN_SAML2_SP_ASSERTION_CONSUMER_SERVICE_URL=http://demoapp1:8081/acs.jsp
             - ONELOGIN_SAML2_SP_SINGLE_LOGOUT_SERVICE_URL=http://demoapp1:8081/sls.jsp
             - ONELOGIN_SAML2_IDP_ENTITYID=http://idp:8080/realms/demorealm/protocol/saml/descriptor
+            - ONELOGIN_SAML2_SECURITY_AUTHNREQUEST_SIGNED=false
+            - ONELOGIN_SAML2_SECURITY_LOGOUTREQUEST_SIGNED=false
+            - ONELOGIN_SAML2_SECURITY_LOGOUTRESPONSE_SIGNED=true
+            - ONELOGIN_SAML2_SECURITY_WANT_MESSAGES_SIGNED=true
+            - ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_SIGNED=true
+            - ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_ENCRYPTED=true
+            - ONELOGIN_SAML2_SECURITY_SIGNATURE_ALGORITHM=http://www.w3.org/2000/09/xmldsig#rsa-sha1
+            - ONELOGIN_SAML2_SECURITY_DIGEST_ALGORITHM=http://www.w3.org/2000/09/xmldsig#rsa-sha1
+
         depends_on:
-            idp:
-                condition: service_healthy
+            idp_setup:
+                condition: service_completed_successfully
