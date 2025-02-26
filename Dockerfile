@@ -1,4 +1,4 @@
-FROM ghcr.io/identicum/alpine-jdk17-maven:latest as builder
+FROM ghcr.io/identicum/alpine-jdk17-maven:latest AS builder
 WORKDIR /app
 COPY . .
 RUN mvn install -DskipTests
@@ -10,7 +10,7 @@ COPY --from=builder /app/target/saml-demoapp-java.war /tmp/
 
 ENV ONELOGIN_SAML2_DEBUG=true
 ENV ONELOGIN_SAML2_STRICT=true
-ENV IDP_ENTITY_DESCRIPTOR=""
+ENV ONELOGIN_SAML2_IDP_ENTITYID = ""
 ENV ONELOGIN_SAML2_SP_ENTITYID=""
 ENV ONELOGIN_SAML2_SP_ASSERTION_CONSUMER_SERVICE_URL=""
 ENV ONELOGIN_SAML2_SP_SINGLE_LOGOUT_SERVICE_URL=""

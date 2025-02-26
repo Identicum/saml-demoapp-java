@@ -23,7 +23,7 @@ services:
             - ONELOGIN_SAML2_SP_ENTITYID=http://demoapp1:8081/
             - ONELOGIN_SAML2_SP_ASSERTION_CONSUMER_SERVICE_URL=http://demoapp1:8081/acs.jsp
             - ONELOGIN_SAML2_SP_SINGLE_LOGOUT_SERVICE_URL=http://demoapp1:8081/sls.jsp
-            - IDP_ENTITY_DESCRIPTOR=http://idp:8080/realms/demorealm/protocol/saml/descriptor
+            - ONELOGIN_SAML2_IDP_ENTITYID=http://idp:8080/realms/demorealm/protocol/saml/descriptor
         depends_on:
             idp:
                 condition: service_healthy

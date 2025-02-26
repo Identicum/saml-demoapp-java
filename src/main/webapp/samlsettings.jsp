@@ -36,10 +36,10 @@ public Properties getSamlSettings() throws Exception {
         }
     });
 
-    String idpEntityDescriptor = properties.getProperty("idp.entity.descriptor");
+    String idpEntityDescriptor = properties.getProperty("onelogin.saml2.idp.entityid");
     if(StringUtils.isNotBlank(idpEntityDescriptor)){
         List<String> idpProperties = Arrays.asList("onelogin.saml2.idp.entityid", "onelogin.saml2.idp.x509cert", "onelogin.saml2.idp.single_sign_on_service.url", "onelogin.saml2.idp.single_logout_service.url");
-        URL url = new URL(properties.getProperty("idp.entity.descriptor"));
+        URL url = new URL(properties.getProperty("onelogin.saml2.idp.entityid"));
 
         Map<String, Object> idpMetadata = IdPMetadataParser.parseRemoteXML(url);
         idpMetadata = idpMetadata
