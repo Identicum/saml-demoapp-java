@@ -1,7 +1,7 @@
 services:
     idp:
         container_name: idp
-        image: ghcr.io/identicum/keycloak:25.0
+        image: ghcr.io/identicum/keycloak:26.1
         restart: always
         pull_policy: always
         environment:
@@ -14,12 +14,16 @@ services:
             - 8080:8080
     demoapp:
         container_name: demoapp
-        image: ghcr.io/identicum/saml-demoapp-java:latest
+        # image: ghcr.io/identicum/saml-demoapp-java:latest
+        build: .
         restart: always
         ports:
             - 8081:8080
         environment:
-            JAVA_OPTS: -Donelogin.saml2.sp.entityid=http://demoapp1:8081/ -Donelogin.saml2.sp.assertion_consumer_service.url=http://demoapp1:8081/acs.jsp -Donelogin.saml2.sp.single_logout_service.url=http://demoapp1:8081/sls.jsp -Didp.entity.descriptor=http://idp:8080/realms/demorealm/protocol/saml/descriptor
+            - ONELOGIN_SAML2_SP_ENTITYID=http://demoapp1:8081/
+            - ONELOGIN_SAML2_SP_ASSERTION_CONSUMER_SERVICE_URL=http://demoapp1:8081/acs.jsp
+            - ONELOGIN_SAML2_SP_SINGLE_LOGOUT_SERVICE_URL=http://demoapp1:8081/sls.jsp
+            - IDP_ENTITY_DESCRIPTOR=http://idp:8080/realms/demorealm/protocol/saml/descriptor
         depends_on:
             idp:
                 condition: service_healthy

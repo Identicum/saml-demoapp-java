@@ -1,5 +1,13 @@
 # For additional parameters in this file, visit: https://github.com/onelogin/java-saml/blob/master/samples/java-saml-tookit-jspsample/src/main/resources/onelogin.saml.properties
 
+# General library paratemeter
+onelogin.saml2.debug =
+onelogin.saml2.strict =
+
+# IDP metadata URI (e.g. http://idp:8080/auth/realms/demorealm/protocol/saml/descriptor)
+idp.entity.descriptor = 
+
+# SP
 # When configuring the SP in your IDP, the URL for the SP metadata is http://app_hostname/metadata.jsp
 
 #  Identifier of the SP entity  (e.g.: http://demoapp1:8081/)
@@ -11,11 +19,7 @@ onelogin.saml2.sp.assertion_consumer_service.url =
 # URL for LogoutResponse
 onelogin.saml2.sp.single_logout_service.url = 
 
-onelogin.saml2.debug = true
-onelogin.saml2.strict = true
-
-# IDP metadata URI (e.g. http://idp:8080/auth/realms/demorealm/protocol/saml/descriptor)
-idp.entity.descriptor = 
-
-onelogin.saml2.sp.nameidformat = urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-# onelogin.saml2.sp.nameidformat = urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress
+# NameID format, e.g.:
+# urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+# urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress
+onelogin.saml2.sp.nameidformat = 

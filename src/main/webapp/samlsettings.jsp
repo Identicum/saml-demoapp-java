@@ -24,13 +24,15 @@ public Properties getSamlSettings() throws Exception {
     inputStream.close();
 
     properties.forEach((key,value) -> {
-        String envProperty = System.getProperty(key.toString());
-        if(envProperty != null){
-            logger.debug("Property {}, setting value {} from environment.", key, envProperty);
-            properties.setProperty(key.toString(), envProperty);
+        String envVariable = ((String) key).toUpperCase().replace('.', '_');
+        String envValue = System.getenv(envVariable);
+
+        if(envValue != null){
+            logger.debug("Property \"{}\", setting value \"{}\" from environment.", key, envValue);
+            properties.setProperty(key.toString(), envValue);
         }
         else{
-            logger.debug("Property {}, keeping value {} from template.", key, value);
+            logger.debug("Property \"{}\", keeping value \"{}\" from template.", key, value);
         }
     });
 
@@ -44,7 +46,7 @@ public Properties getSamlSettings() throws Exception {
                 .entrySet()
                 .stream()
                 .filter(property -> idpProperties.contains(property.getKey()))
-                .peek(property -> logger.debug("Property {}, setting value {} from IDP metadata.", property.getKey(), property.getValue()))
+                .peek(property -> logger.debug("Property {}, setting value \"{}\" from IDP metadata.", property.getKey(), property.getValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         properties.putAll(idpMetadata);
     }
