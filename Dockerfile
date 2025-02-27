@@ -26,8 +26,7 @@ ENV ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_ENCRYPTED=false
 ENV ONELOGIN_SAML2_SECURITY_WANT_NAMEID_ENCRYPTED=false
 ENV ONELOGIN_SAML2_SECURITY_SIGNATURE_ALGORITHM="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
 ENV ONELOGIN_SAML2_SECURITY_DIGEST_ALGORITHM="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
-
-
+ENV ONELOGIN_SAML2_SECURITY_ALLOW_DUPLICATED_ATTRIBUTE_NAME=false
 
 RUN rm -rf /usr/local/tomcat/webapps/ROOT/* && \
     unzip -qq /tmp/saml-demoapp-java.war -d /usr/local/tomcat/webapps/ROOT && \
