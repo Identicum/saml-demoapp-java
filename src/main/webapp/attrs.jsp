@@ -35,6 +35,48 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+		<style>
+		li a{
+                text-decoration: none;
+                color: white;
+            }
+            .custom-menu {
+            position: relative;
+            display: inline-block;
+            }
+            .custom-menu-button {
+                background-color: rgb(63, 172, 64);
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                cursor: pointer;
+            }
+            .custom-menu-dropdown {
+                position: absolute;
+                width: max-content;
+                top: 100%;
+                padding: 0;
+                background-color: rgb(63, 172, 64);
+                color: white;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.2s ease-in-out;
+            }
+            .custom-menu:hover .custom-menu-dropdown {
+                opacity: 1;
+                visibility: visible;
+            }
+            .custom-menu-item {
+                padding: 10px;
+                cursor: pointer;
+            }
+            .custom-menu-item:hover {
+                border-radius: 10px;
+            }
+            .nav-link {
+                color: #000;
+            }
+	</style>
 	</head>
 	<body>
 		<%
@@ -53,21 +95,34 @@
 			NodeList attributesList = (NodeList)session.getAttribute("attributesList");
 			logger.debug("Attributes: {}", attributesList);
 		%>
-		<div class="navbar fixed-top">
+		<div class="navbar navbar-light bg-light fixed-top">
 			<div class="container">
 				<div class="navbar-header">
 					<a class="navbar-brand" rel="assertionb64" href="#" title="Identicum">
 						<img style="max-width:140px; margin-top: -7px;" src="imgs/logo.png">
 					</a>
 				</div>
-				<div class="navbar-nav">
-					<a class="nav-item" href="dologout.jsp" style="color:#ffffff">Logout</a>
-				</div>
+				<div class="custom-menu">
+                    <button class="custom-menu-button">Menu</button>
+                    <ul class="custom-menu-dropdown">
+						<li class="custom-menu-item" type="button"><a id="logout-button" href="dologout.jsp">Logout</a></li>
+                    </ul>
+                </div>
 			</div>
 		</div>
+
+	<style>
+		.nav-pills .nav-link.active {
+			background-color: rgb(63, 172, 64);
+		}
+		a {
+			color: rgb(63, 172, 64);
+		}
+	</style>
+
 		<div class="container" style="margin-top:100px"> 
 			<div>
-				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
 					<li class="nav-item">
 						<a class="nav-link active" id="assertionb64-tab" data-toggle="tab" href="#assertionb64" role="tab" aria-controls="assertionb64" aria-selected="true">Assertion b64</a>
 					</li>
@@ -82,7 +137,7 @@
 				<!-- Tab panes -->
 					<div class="tab-content" style="padding-top: 20px">
 						<div class="tab-pane fade show active" id="assertionb64" role="tabpanel" aria-labelledby="assertionb64-tab">
-							<a href="#" id="copy" class="btn btn-primary float-right">Copy to Clipboard</a>
+							<a href="#" id="copy" class="btn btn-success float-right">Copy to Clipboard</a>
 							<h2>base64-encoded assertion</h2>
 							<pre id="base64Assertion"><%= assertionB64 %></pre>
 						</div>
