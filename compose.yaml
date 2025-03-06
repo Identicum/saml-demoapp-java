@@ -25,12 +25,10 @@ services:
         container_name: demoapp
         image: ghcr.io/identicum/saml-demoapp-java:latest
         restart: always
-        ports:
-            - 8081:8080
         environment:
-            - ONELOGIN_SAML2_SP_ENTITYID=http://demoapp1:8081/
-            - ONELOGIN_SAML2_SP_ASSERTION_CONSUMER_SERVICE_URL=http://demoapp1:8081/acs.jsp
-            - ONELOGIN_SAML2_SP_SINGLE_LOGOUT_SERVICE_URL=http://demoapp1:8081/sls.jsp
+            - ONELOGIN_SAML2_SP_ENTITYID=http://demoapp1/
+            - ONELOGIN_SAML2_SP_ASSERTION_CONSUMER_SERVICE_URL=http://demoapp1/acs.jsp
+            - ONELOGIN_SAML2_SP_SINGLE_LOGOUT_SERVICE_URL=http://demoapp1/sls.jsp
             - ONELOGIN_SAML2_IDP_ENTITYID=http://idp:8080/realms/demorealm/protocol/saml/descriptor
             - ONELOGIN_SAML2_SECURITY_AUTHNREQUEST_SIGNED=false
             - ONELOGIN_SAML2_SECURITY_LOGOUTREQUEST_SIGNED=false
@@ -40,7 +38,18 @@ services:
             - ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_ENCRYPTED=true
             - ONELOGIN_SAML2_SECURITY_SIGNATURE_ALGORITHM=http://www.w3.org/2000/09/xmldsig#rsa-sha1
             - ONELOGIN_SAML2_SECURITY_DIGEST_ALGORITHM=http://www.w3.org/2000/09/xmldsig#rsa-sha1
-
+        volumes:
+            - ./src/main/webapp/acs.jsp:/usr/local/tomcat/webapps/ROOT/acs.jsp
+            - ./src/main/webapp/attrs.jsp:/usr/local/tomcat/webapps/ROOT/attrs.jsp
         depends_on:
             idp_setup:
                 condition: service_completed_successfully
+    nginx:
+        container_name: nginx
+        image: ghcr.io/identicum/nginx:latest
+        pull_policy: always
+        restart: always
+        ports:
+            - 80:80
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
