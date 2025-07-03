@@ -2,7 +2,9 @@ resource "keycloak_saml_client" "demoapp1" {
   realm_id                        = keycloak_realm.realm.id
   name                            = "demoapp1"
   client_id                       = "http://demoapp1/"
-  valid_redirect_uris             = [ "http://demoapp1/acs.jsp" ]
+  root_url                        = "http://demoapp1"
+  base_url                        = "/"
+  valid_redirect_uris             = [ "/acs.jsp" ]
   client_signature_required       = false
   sign_documents                  = true
   # signature_algorithm             = "RSA_SHA256"
@@ -12,8 +14,9 @@ resource "keycloak_saml_client" "demoapp1" {
   force_name_id_format            = true
   name_id_format                  = "email"
   full_scope_allowed              = false
- 
-  logout_service_post_binding_url     = "http://demoapp1/sls.jsp"
+  # Logout handled in redirect, NOT in POST
+  front_channel_logout            = true
+  logout_service_redirect_binding_url = "http://demoapp1/sls.jsp"
 }
 
 resource "keycloak_saml_client_default_scopes" "demoapp1" {
