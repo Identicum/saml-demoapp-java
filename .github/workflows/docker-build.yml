@@ -1,0 +1,19 @@
+name: docker-build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+    - 'Dockerfile'
+    - 'pom.xml'
+    - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    uses: Identicum/github-actions/.github/workflows/docker-build-autotag.yml@main
+    with:
+      image_name: alpine-jre17-tomcat9
+      context: alpine-jre17-tomcat9
+    secrets: inherit # This passes GITHUB_TOKEN so it can push to GHCR
