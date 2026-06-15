@@ -14,6 +14,6 @@ jobs:
   docker-build:
     uses: Identicum/github-actions/.github/workflows/docker-build-autotag.yml@main
     with:
-      image_name: alpine-jre17-tomcat9
-      context: alpine-jre17-tomcat9
+      image_name: ${{ github.event.repository.name }}
+      context: .
     secrets: inherit # This passes GITHUB_TOKEN so it can push to GHCR
