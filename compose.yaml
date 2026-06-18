@@ -1,7 +1,7 @@
 services:
     idp:
         container_name: idp
-        image: ghcr.io/identicum/keycloak:26.1
+        image: ghcr.io/identicum/keycloak:26.6
         restart: always
         pull_policy: always
         environment:
@@ -36,7 +36,7 @@ services:
             - ONELOGIN_SAML2_SECURITY_LOGOUTRESPONSE_SIGNED=true
             - ONELOGIN_SAML2_SECURITY_WANT_MESSAGES_SIGNED=true
             - ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_SIGNED=true
-            - ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_ENCRYPTED=true
+            - ONELOGIN_SAML2_SECURITY_WANT_ASSERTIONS_ENCRYPTED=false
             - ONELOGIN_SAML2_SECURITY_SIGNATURE_ALGORITHM=http://www.w3.org/2000/09/xmldsig#rsa-sha1
             - ONELOGIN_SAML2_SECURITY_DIGEST_ALGORITHM=http://www.w3.org/2000/09/xmldsig#rsa-sha1
         volumes:
