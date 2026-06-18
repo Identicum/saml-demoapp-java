@@ -191,7 +191,16 @@
                             for(int i = 0; i < attributesList.getLength(); i++){
                                 Node attribute = attributesList.item(i);
                                 NamedNodeMap elementAttributes = attribute.getAttributes();
-                                out.println("<tr><td>" + elementAttributes.getNamedItem("Name").getTextContent() + "</td><td>" + elementAttributes.getNamedItem("FriendlyName").getTextContent() + "</td><td>" + attribute.getTextContent() + "</td></tr>");
+                                NodeList valueNodes = attribute.getChildNodes();
+                                StringBuilder valuesHtml = new StringBuilder();
+                                for (int j = 0; j < valueNodes.getLength(); j++) {
+                                    Node valueNode = valueNodes.item(j);
+                                    if (valueNode.getNodeType() == Node.ELEMENT_NODE) {
+                                        if (valuesHtml.length() > 0) valuesHtml.append("<br>");
+                                        valuesHtml.append(valueNode.getTextContent());
+                                    }
+                                }
+                                out.println("<tr><td>" + elementAttributes.getNamedItem("Name").getTextContent() + "</td><td>" + elementAttributes.getNamedItem("FriendlyName").getTextContent() + "</td><td>" + valuesHtml + "</td></tr>");
                             }
                 %>
                                 </tbody>
